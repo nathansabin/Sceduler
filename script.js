@@ -1,5 +1,3 @@
-// TODO fix bug where all boxes have a bunch of '. The issue is something to do with local storage in the first and third section
-
 // DONE Wrap all code that interacts with the DOM in a call to jQuery to ensure that
 // the code isn't run until the browser has finished rendering all the elements
 // in the html.
@@ -16,15 +14,18 @@ $(document).ready(function(){
   // time-block containing the button that was clicked? How might the id be
   // useful when saving the description in local storage?
   //
+  function addText() {
+    for (var i = 0; i <hours.length; i++){
+      hours.eq(i).children().eq(2).on("click", function(){
+        textBoxs = $(this).siblings("textarea").val().trim();
+        boxId = $(this).parent().attr("id");
+        localStorage.setItem(boxId, textBoxs);
 
-  for (var i = 0; i <hours.length; i++){
-    hours.eq(i).children().eq(2).on("click", function(){
-      textBoxs[i] = $(this).siblings("textarea").val().trim();
-      boxId = $(this).parent().attr("id");
-      localStorage.setItem(boxId, textBoxs);
-      console.log(localStorage.getItem(boxId));
-    })
+        console.log(localStorage.getItem(boxId));
+        console.log(textBoxs);
+      })
 
+    }
   }
   
   // Done: Add code to apply the past, present, or future class to each time
@@ -33,42 +34,48 @@ $(document).ready(function(){
   // past, present, and future classes? How can Day.js be used to get the
   // current hour in 24-hour time?
   //
+  function hourSet(){
+    var currentHour = dayjs().format("H");
+    var formatedHour = "hour-"+currentHour;
+    var hourFound = false;
 
-  var currentHour = dayjs().format("H");
-  var formatedHour = "hour-"+currentHour;
-  var hourFound = false;
-
-  for (var i = 0; i < hours.length; i++){
-    if (formatedHour === hours.eq(i).attr("id") && hourFound == false ){
-      hours.eq(i).removeClass("past").addClass("present");
-      hourFound = true;
-    }
-    else if (hourFound == true) {
-      hours.children(i).removeClass("past").addClass("future");
+    for (var i = 0; i < hours.length; i++){
+      if (formatedHour === hours.eq(i).attr("id") && hourFound == false ){
+        hours.eq(i).removeClass("past").addClass("present");
+        hourFound = true;
+      }
+      else if (hourFound == true) {
+        hours.children(i).removeClass("past").addClass("future");
+      }
     }
   }
-
 
   // DONE: Add code to get any user input that was saved in localStorage and set
   // the values of the corresponding textarea elements. HINT: How can the id
   // attribute of each time-block be used to do this?
   //
-  // console.log(localStorage.getItem(hours.eq(3).attr("id")))
   
-  for (var i = 0; i < hours.length; i++ ){
-    boxId = hours.eq(i).attr("id");
-    var textData = localStorage.getItem(boxId);
-    hours.eq(i).children().eq(1).text(textData);
+  function setBox(){
+    for (var i = 0; i < hours.length; i++ ){
+      boxId = hours.eq(i).attr("id");
+      var textData = localStorage.getItem(boxId);
+      hours.eq(i).children().eq(1).text(textData);
+    }
   }
- 
 
   // Done Add code to display the current date in the header of the page.
   function currentDate(){
     var currentDay = dayjs().format("D, MMMM YYYY");
     $("#currentDay").text(currentDay);
   }
-  // Thursday, october 5TH
-  setInterval(currentDate, 1000);
+  function init(){
+    setInterval(currentDate, 1000);
+    hourSet();
+    setBox();
+    addText();
+  }
+
+  init();
 
   });
 })
