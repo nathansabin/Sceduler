@@ -68,6 +68,8 @@ $(document).ready(function(){
     var currentDay = dayjs().format("D, MMMM YYYY");
     $("#currentDay").text(currentDay);
   }
+
+  // Sets all functions
   function init(){
     setInterval(currentDate, 1000);
     hourSet();
